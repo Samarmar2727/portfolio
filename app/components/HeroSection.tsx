@@ -1,234 +1,194 @@
 "use client";
 
-
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-
-/**
- * Hero with:
- * - SVG leaves (falling + sway + rotate)
- * - ScrollTrigger controlling leaves animation (pause/resume)
- * - Typewriter effect for subtitle
- */
-
-// Register the ScrollTrigger plugin with GSAP
+// Register plugin
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-
 export default function HeroSection() {
-
-
-      // Reference to the hero section container (used for gsap.context / ScrollTrigger scope)
   const sectionRef = useRef<HTMLElement | null>(null);
-
-    // Array refs for each leaf DOM element so GSAP can animate them directly
   const leavesRef = useRef<Array<HTMLDivElement | null>>([]);
-
-   // Refs for content that will animate (title, subtitle, buttons)
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const subtitleRef = useRef<HTMLHeadingElement | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
 
-  
-  // How many leaves to render
-  const LEAVES_COUNT = 10;
+  const LEAVES_COUNT = 12;
+  const symbols = ["🍂", "🎃", "🌰"]; // Autumn mix
 
-    useEffect(() => {
-    // Guard: ensure sectionRef is present in DOM
+  // Loop typing effect for "Samar Khaled"
+  const [displayName, setDisplayName] = useState("");
+  const fullName = "Samar Khaled";
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [loopIndex, setLoopIndex] = useState(0);
+
+  useEffect(() => {
+    const typingSpeed = isDeleting ? 100 : 150;
+
+    const handleTyping = () => {
+      const updatedText = isDeleting
+        ? fullName.substring(0, displayName.length - 1)
+        : fullName.substring(0, displayName.length + 1);
+
+      setDisplayName(updatedText);
+
+      if (!isDeleting && updatedText === fullName) {
+        setTimeout(() => setIsDeleting(true), 1000); // pause before delete
+      } else if (isDeleting && updatedText === "") {
+        setIsDeleting(false);
+        setLoopIndex(loopIndex + 1);
+      }
+    };
+
+    const timer = setTimeout(handleTyping, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [displayName, isDeleting, loopIndex]);
+
+  useEffect(() => {
     if (!sectionRef.current) return;
 
-        // gsap.context helps to scope animations to this component and makes cleanup easy
-      const ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       const W = window.innerWidth;
       const H = window.innerHeight;
-         // small helper for random numbers between min and max
-      const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+      const rand = (min: number, max: number) =>
+        Math.random() * (max - min) + min;
 
-      // -----------------------
-      // 1) Leaves animation
-      // -----------------------
-      // Create a timeline to control all leaves together (so we can pause/resume)
+      // Falling autumn symbols
       const leavesTimeline = gsap.timeline({ paused: false });
 
-      // For each leaf element, set initial state and add their animation into the timeline
-      leavesRef.current.forEach((leafEl, i) => {
+      leavesRef.current.forEach((leafEl) => {
         if (!leafEl) return;
 
-         // Set initial style for better performance using gsap.set (no animation, immediate)
         gsap.set(leafEl, {
-          x: rand(0, W),     // start at random horizontal position
-          y: -rand(20, 120), // start slightly above viewport
+          x: rand(0, W),
+          y: -rand(20, 120),
           scale: rand(0.7, 1.1),
           rotation: rand(-30, 30),
           opacity: rand(0.8, 1),
-          transformOrigin: "center center",
-          willChange: "transform, opacity",
         });
 
-        // Randomized motion parameters
-        const duration = rand(7, 13); // how long it takes to fall
-        const delay = rand(0, 4);     // staggered delays
-        const sway = rand(50, 150);   // horizontal sway amount
-        const spin = rand(120, 720);  // total rotation during fall
+        const duration = rand(7, 13);
+        const delay = rand(0, 4);
+        const sway = rand(50, 150);
+        const spin = rand(120, 720);
 
-         // Build an individual timeline for this leaf and add it to leavesTimeline
         const tl = gsap.timeline({
-          defaults: { ease: "none" }, // linear fall feel
-          repeat: -1,                 // infinite loop
+          defaults: { ease: "none" },
+          repeat: -1,
           delay,
         });
 
-        // Main fall: move down beyond bottom of viewport and rotate while falling
-        tl.to(leafEl, {
-          y: H + 200,           // move past the bottom
-          rotate: `+=${spin}`,  // rotate relative to current rotation
-          duration,
-        }, 0);
+        tl.to(
+          leafEl,
+          {
+            y: H + 200,
+            rotate: `+=${spin}`,
+            duration,
+          },
+          0
+        );
 
-        // Sway: go left-right while falling (yoyo makes it go back)
-        tl.to(leafEl, {
-          x: `+=${sway}`,       // move horizontally then come back
-          duration: duration / 2,
-          ease: "sine.inOut",
-          yoyo: true,
-          repeat: 1,            // do a left-right once per fall
-        }, 0);
+        tl.to(
+          leafEl,
+          {
+            x: `+=${sway}`,
+            duration: duration / 2,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: 1,
+          },
+          0
+        );
 
-           // Add this leaf's individual timeline into the main leavesTimeline (so all timelines are alive)
         leavesTimeline.add(tl, 0);
       });
 
-
-      // -----------------------
-      // 2) Use ScrollTrigger to pause/resume leaves when hero leaves viewport
-      // -----------------------
       ScrollTrigger.create({
         trigger: sectionRef.current,
-        start: "top top",      // when top of hero hits top of viewport
-        end: "bottom top",     // until bottom of hero reaches top of viewport
-        onEnter: () => leavesTimeline.play(),       // play when hero is in view
-        onEnterBack: () => leavesTimeline.play(),   // play when scrolling back up
-        onLeave: () => leavesTimeline.pause(),      // pause when hero scrolled past
-        onLeaveBack: () => leavesTimeline.play(),
-        // markers: true, // uncomment during debugging to see trigger positions
+        start: "top top",
+        end: "bottom top",
+        onEnter: () => leavesTimeline.play(),
+        onLeave: () => leavesTimeline.pause(),
       });
 
-       // Subtitle: we'll implement a typewriter using small timeline steps
-      // Clear subtitle text first (we will "type" it)
+      // Subtitle typewriter ("Frontend Developer")
       if (subtitleRef.current) subtitleRef.current.textContent = "";
-
       const fullSubtitle = "Frontend Developer";
-      const typingDelay = 0.06; // seconds between chars
-      const contentTL = gsap.timeline({ paused: true });
+      const typingDelay = 0.06;
+      const contentTL = gsap.timeline();
 
-
-      // For each character, append it after a short tween (this creates the typewriter effect)
-      fullSubtitle.split("").forEach((char, idx) => {
+      fullSubtitle.split("").forEach((char) => {
         contentTL.to({}, {
           duration: typingDelay,
           onComplete: () => {
-            if (subtitleRef.current) subtitleRef.current.textContent += char;
-          }
+            if (subtitleRef.current)
+              subtitleRef.current.textContent += char;
+          },
         });
       });
 
-      // Small pause then animate buttons in
       contentTL.from(buttonsRef.current, {
         scale: 0.95,
         opacity: 0,
         duration: 0.5,
       }, "+=0.15");
 
-      // Optionally, we could tie contentTL start to a ScrollTrigger (e.g. start when hero enters view)
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top center",
-        onEnter: () => contentTL.play(0),
-      });
+      contentTL.play(0);
 
-      // Start content timeline paused (we'll trigger it manually onEnter)
-      contentTL.pause()
-      }, sectionRef); // scope context to sectionRef
+    }, sectionRef);
 
-
-       // Cleanup when component unmounts: revert context (kills animations, triggers)
     return () => {
       ctx.revert();
-      ScrollTrigger.getAll().forEach(st => st.kill());
+      ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
-  // Inline SVG for a leaf (you can replace path with a different nicer leaf
-  // SVG later). We render multiple copies of the same SVG.
-  const LeafSVG = (
-    <svg
-      width="28"
-      height="28"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className="block"
-    >
-      <path
-        d="M20.6 3.4c-3.6 0-9.7 2.5-13 5.8-3.3 3.3-5.8 9.4-5.8 13 0-.1 4.2-1.1 8.6-5.5 4.4-4.4 5.4-8.6 5.5-8.6 3.6 0 6.1-2.2 6.1-6.1 0-1.5-1.2-2.7-2.4-2.7z"
-        fill="#D97706" /* amber-600 */
-      />
-      <path
-        d="M6 18c0 0 2.5-2.1 5.5-5.1C14 9.3 16.2 6.8 18 6"
-        stroke="#92400E"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        opacity="0.6"
-      />
-    </svg>
-  );
 
   return (
-    <section
+    <section 
+      id="home"
       ref={sectionRef}
       className="relative flex flex-col items-center justify-center text-center min-h-screen bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-black px-4 overflow-hidden"
       aria-label="Hero - Samar Khaled"
     >
-      {/* Render leaves as absolutely-positioned elements (GSAP will animate them) */}
+      {/* Falling autumn symbols */}
       {Array.from({ length: LEAVES_COUNT }).map((_, i) => (
         <div
           key={i}
-          // store DOM node reference so GSAP can animate it
-            ref={(el) => {
+          ref={(el) => {
             leavesRef.current[i] = el;
-            }}
-
+          }}
           className="pointer-events-none select-none absolute"
-          style={{ left: 0, top: 0 }} // positioning is managed by GSAP (we set x/y there)
+          style={{ left: 0, top: 0 }}
           aria-hidden
         >
-          {LeafSVG}
+          {symbols[Math.floor(Math.random() * symbols.length)]}
         </div>
       ))}
 
-      {/* Content on top of leaves (z-10) */}
+      {/* Content */}
       <h1
         ref={titleRef}
-        className="text-4xl sm:text-6xl font-extrabold text-gray-900 dark:text-white mb-4 relative z-10"
+        className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-4 relative z-10"
       >
-        Hi, I&apos;m <span className="text-orange-500">Samar Khaled</span>
+        Hi, I&apos;m{" "}
+        <span className="text-orange-500">{displayName}</span>
+        <span className="animate-pulse">|</span>
       </h1>
 
       <h2
         ref={subtitleRef}
-        className="text-xl sm:text-2xl font-medium text-gray-700 dark:text-gray-300 mb-6 relative z-10"
+        className="text-lg sm:text-2xl font-medium text-gray-700 dark:text-gray-300 mb-6 relative z-10"
         aria-live="polite"
-      >
-        {/* subtitle will be filled by the typewriter */}
-      </h2>
+      />
 
-      <p className="max-w-2xl text-gray-600 dark:text-gray-400 mb-8 relative z-10">
+      <p className="max-w-2xl text-gray-600 dark:text-gray-400 mb-8 relative z-10 text-sm sm:text-base">
         Crafting modern, responsive web experiences with <br />
-        <span className="font-semibold">React, Next.js & Tailwind CSS</span>.
+        <span className="font-semibold">
+          React, Next.js & Tailwind CSS
+        </span>.
       </p>
 
       <div ref={buttonsRef} className="flex gap-4 relative z-10">
@@ -239,7 +199,8 @@ export default function HeroSection() {
           Contact Me
         </a>
         <a
-          href="https://docs.google.com/document/d/1FNkXJ7rLgj7z_-tetRZ9PtTKvE4aYffzitpmC4pc9qw/edit?usp=drivesdk"
+          href="/samarkhaled-fronted.pdf"
+          download
           className="px-6 py-3 border-2 border-orange-500 text-orange-500 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-800 transition"
         >
           Download CV
@@ -247,9 +208,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-}
-
-
-
-
 

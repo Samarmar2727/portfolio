@@ -19,7 +19,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaGithub className="w-8 h-8 md:w-7 md:h-7 hover:text-gray-400 transition-colors" />
+            <FaGithub className="w-8 h-8 md:w-7 md:h-7 dark:text-white hover:text-orange-600 transition-colors" />
           </a>
 
           {/* LinkedIn */}
@@ -28,7 +28,7 @@ export default function Footer() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <FaLinkedin className="w-8 h-8 md:w-7 md:h-7 hover:text-blue-400 transition-colors" />
+            <FaLinkedin className="w-8 h-8 md:w-7 md:h-7  dark:text-white hover:text-blue-400 transition-colors" />
           </a>
 
           {/* WhatsApp */}

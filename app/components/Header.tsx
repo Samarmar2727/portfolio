@@ -13,7 +13,7 @@ export default function Header() {
     <header className="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 shadow-md z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
         {/* Logo */}
-        <h1 className="text-xl font-bold dark:text-white">Samar Khaled</h1>
+        <h1 className="text-xl font-bold dark:text-orange-500">Samar Khaled</h1>
 
         {/* Links (desktop) */}
         <nav className="hidden md:flex gap-6">
@@ -21,7 +21,7 @@ export default function Header() {
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-500 transition"
+              className="text-gray-700 dark:text-gray-200 hover:text-orange-600 transition"
             >
               {link}
             </a>
@@ -31,13 +31,12 @@ export default function Header() {
         {/* Actions (dark mode + burger) */}
         <div className="flex items-center gap-4">
           <DarkModeToggle />
-
           {/* Burger menu (mobile only) */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 rounded"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={24} className="dark:text-red-200" /> : <Menu size={24} className="dark:text-white" />}
           </button>
         </div>
       </div>
@@ -49,7 +48,7 @@ export default function Header() {
             <a
               key={link}
               href={`#${link.toLowerCase()}`}
-              className="text-gray-700 dark:text-gray-200 hover:text-blue-500 transition"
+              className="text-gray-700 dark:text-gray-200 hover:text-orange-600 transition"
               onClick={() => setIsOpen(false)}
             >
               {link}

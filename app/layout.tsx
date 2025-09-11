@@ -21,14 +21,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} bg-white dark:bg-gray-900`}>
+       <body className={`${inter.className} bg-white dark:bg-gray-900`}>
         {/* Header */}
         <Header />
-
-        {/* Dark mode toggle */}
-        <div className="fixed top-4 right-4 z-50">
-          <DarkModeToggle />
-        </div>
 
         {/* Main content */}
         <main className="min-h-screen">{children}</main>
