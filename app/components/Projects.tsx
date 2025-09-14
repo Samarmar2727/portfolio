@@ -60,7 +60,7 @@ const projects: Project[] = [
     features: ["Add/Edit/Delete tasks", "Mark as complete", "Responsive UI"],
     live: "https://samarmar2727.github.io/TO-DO-List-by-react/",
     github: "https://github.com/Samarmar2727/TO-DO-List-by-react",
-    image: "/todo.JBG",
+    image: "/todo.JPG",
   },
   {
     title: "Social Media App",
@@ -69,7 +69,7 @@ const projects: Project[] = [
     technologies: ["javaScript", "Bootstrap", "Tarmeez API"],
     features: ["Auth (login/register)", "CRUD posts", "Comments", "Profile page"],
     github: "https://github.com/Samarmar2727/social-media-project",
-    image: "/social2.JPG",
+    image: "/social 2.JPG",
   },
 ];
 
@@ -93,7 +93,7 @@ export default function Projects() {
     <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 dark:text-white">
-          Projects
+           Featured Projects
         </h2>
         <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
           {projects.map((project, i) => (
@@ -111,7 +111,7 @@ export default function Projects() {
                     }}
                   >
               {/* Project Image */}
-              <div className="relative w-full h-44 mb-4">
+              <div className="relative w-full h-60 mb-4">
                 <Image
                   src={project.image}
                   alt={project.title}

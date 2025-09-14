@@ -10,31 +10,33 @@ if (typeof window !== "undefined") {
 
 export default function PersonalInfo() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const itemsRef = useRef<(HTMLDivElement | HTMLHeadingElement | null)[]>([]);
+  const itemsRef = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    if (!sectionRef.current) return;
+    console.log("itemsRef.current:", itemsRef.current); // المفروض يطبع array فيها العناصر
+
+    if (!sectionRef.current || itemsRef.current.length === 0) return;
 
     const ctx = gsap.context(() => {
-      gsap.from(itemsRef.current, {
-        opacity: 0,
-        y: 20,
-        scale: 0.95,
-        duration: 0.8,
-        ease: "power2.out",
-        stagger: 0.5, 
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
+      gsap.fromTo(
+        itemsRef.current,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.3,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 90%",
+            toggleActions: "play none none none",
+          },
+        }
+      );
     }, sectionRef);
 
-    return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   const personalData = [
@@ -46,9 +48,6 @@ export default function PersonalInfo() {
     { label: "LinkedIn", value: "https://www.linkedin.com/in/samar-khaled2727" },
   ];
 
-
-
-  
   return (
     <section
       ref={sectionRef}
@@ -57,7 +56,7 @@ export default function PersonalInfo() {
     >
       <h2
         ref={(el) => {
-          itemsRef.current[0] = el;
+          if (el) itemsRef.current[0] = el;
         }}
         className="text-2xl sm:text-4xl font-bold text-gray-900 dark:text-white mt-8 sm:mt-12 mb-8 sm:mb-12"
       >
@@ -65,25 +64,24 @@ export default function PersonalInfo() {
       </h2>
 
       <div className="w-full max-w-xl flex flex-col gap-6">
-  {personalData.map((item, index) => (
-    <div
-      key={index}
-      ref={(el) => {
-        itemsRef.current[index + 1] = el;
-      }}
-      className="p-4 bg-gray dark:bg-gray-800 text-left border border-gray-300 dark:border-gray-600 
-                 rounded-lg shadow-md transition transform hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-    >
-      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-        {item.label}
-      </p>
-      <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">
-        {item.value}
-      </p>
-    </div>
-  ))}
-</div>
-
+        {personalData.map((item, index) => (
+          <div
+            key={index}
+            ref={(el) => {
+              if (el) itemsRef.current[index + 1] = el;
+            }}
+            className="p-4 bg-transparent dark:bg-gray-800 text-left  
+                       rounded-lg shadow-md transition transform hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+          >
+            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              {item.label}
+            </p>
+            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 break-words">
+              {item.value}
+            </p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

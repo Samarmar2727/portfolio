@@ -59,7 +59,8 @@ export default function Contact() {
           {/* Socials inside the same box */}
           <div className="mt-6">
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-4">
-              Or reach me via:
+             or 
+             reach me via:
             </p>
             <div className="flex justify-center space-x-6 text-3xl text-orange-500">
               <a

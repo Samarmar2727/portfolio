@@ -18,10 +18,10 @@ export default function HeroSection() {
   const subtitleRef = useRef<HTMLHeadingElement | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
 
-  const LEAVES_COUNT = 20;//  number of falling leaves
+  const LEAVES_COUNT = 15;//  number of falling leaves
   const symbols = ["🍂"]; // falling leaves symbol
 
-  // ✅ Typewriter effect for name
+  //Typewriter effect for name
   const displayName = useTypewriter(["Samar Khaled"], 150, 100, 1000);
 
   // Falling leaves animation
@@ -41,7 +41,7 @@ export default function HeroSection() {
       leavesRef.current.forEach((leafEl) => {
         if (!leafEl) return;
 
-        const size = rand(0.8, 1.6); // ✅ smaller, more natural sizes
+        const size = rand(0.8, 1.6); // smaller, more natural sizes
 
         gsap.set(leafEl, {
           x: rand(0, W),
@@ -139,7 +139,7 @@ export default function HeroSection() {
       className="relative flex flex-col items-center justify-center text-center min-h-screen bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-black px-4 overflow-hidden"
       aria-label="Hero - Samar Khaled"
     >
-      {/* 🍂 Falling autumn leaves */}
+      {/* Falling autumn leaves */}
       {Array.from({ length: LEAVES_COUNT }).map((_, i) => (
         <div
           key={i}
