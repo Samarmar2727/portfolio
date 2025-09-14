@@ -71,7 +71,7 @@ export default function PersonalInfo() {
       ref={(el) => {
         itemsRef.current[index + 1] = el;
       }}
-      className="p-4 bg-gray text:black dark:bg-gray-800 text-left border border-gray-300 dark:border-gray-600 
+      className="p-4 bg-gray dark:bg-gray-800 text-left border border-gray-300 dark:border-gray-600 
                  rounded-lg shadow-md transition transform hover:scale-105 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
     >
       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
