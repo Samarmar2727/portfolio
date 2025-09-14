@@ -1,17 +1,23 @@
-import HeroSection from "./components/HeroSection"
-import PersonalInfo from "./components/About"
-import SkillsSection from "./components/SkillsSection"
+import HeroSection from "./components/HeroSection";
+import PersonalInfo from "./components/About";
+import SkillsSection from "./components/SkillsSection";
+import Projects from "./components/Projects";
+import Contact from "./components/Contacts";
 
 export default function Home() {
   return (
-    <div >
+    <div>
       <main>
-        {/*Hero section*/ }
+      {/*Hero section*/ }
         <HeroSection/>
-        {/*About section*/ }
+      {/*About section*/ }
         <PersonalInfo/>
-       {/*skills section*/ }
+      {/*skills section*/ }
         <SkillsSection/>
+      {/*Projects section*/ }
+        <Projects/>
+      {/*Contacts section*/ }
+        <Contact/>
       </main>
     
     </div>

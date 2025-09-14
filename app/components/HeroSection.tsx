@@ -1,52 +1,30 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTypewriter } from "../hooks/useTypewriter"; // Reusable typewriter hook
 
-// Register plugin
+// Register GSAP plugin safely on client
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
 export default function HeroSection() {
+  // Refs for DOM elements
   const sectionRef = useRef<HTMLElement | null>(null);
   const leavesRef = useRef<Array<HTMLDivElement | null>>([]);
   const titleRef = useRef<HTMLHeadingElement | null>(null);
   const subtitleRef = useRef<HTMLHeadingElement | null>(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
 
-  const LEAVES_COUNT = 12;
-  const symbols = ["🍂", "🎃", "🌰"]; // Autumn mix
+  const LEAVES_COUNT = 20;//  number of falling leaves
+  const symbols = ["🍂"]; // falling leaves symbol
 
-  // Loop typing effect for "Samar Khaled"
-  const [displayName, setDisplayName] = useState("");
-  const fullName = "Samar Khaled";
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [loopIndex, setLoopIndex] = useState(0);
+  // ✅ Typewriter effect for name
+  const displayName = useTypewriter(["Samar Khaled"], 150, 100, 1000);
 
-  useEffect(() => {
-    const typingSpeed = isDeleting ? 100 : 150;
-
-    const handleTyping = () => {
-      const updatedText = isDeleting
-        ? fullName.substring(0, displayName.length - 1)
-        : fullName.substring(0, displayName.length + 1);
-
-      setDisplayName(updatedText);
-
-      if (!isDeleting && updatedText === fullName) {
-        setTimeout(() => setIsDeleting(true), 1000); // pause before delete
-      } else if (isDeleting && updatedText === "") {
-        setIsDeleting(false);
-        setLoopIndex(loopIndex + 1);
-      }
-    };
-
-    const timer = setTimeout(handleTyping, typingSpeed);
-    return () => clearTimeout(timer);
-  }, [displayName, isDeleting, loopIndex]);
-
+  // Falling leaves animation
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -56,31 +34,36 @@ export default function HeroSection() {
       const rand = (min: number, max: number) =>
         Math.random() * (max - min) + min;
 
-      // Falling autumn symbols
+      // Timeline for all leaves
       const leavesTimeline = gsap.timeline({ paused: false });
 
+      // Animate each falling leaf 
       leavesRef.current.forEach((leafEl) => {
         if (!leafEl) return;
+
+        const size = rand(0.8, 1.6); // ✅ smaller, more natural sizes
 
         gsap.set(leafEl, {
           x: rand(0, W),
           y: -rand(20, 120),
-          scale: rand(0.7, 1.1),
+          scale: size,
           rotation: rand(-30, 30),
           opacity: rand(0.8, 1),
         });
 
-        const duration = rand(7, 13);
-        const delay = rand(0, 4);
-        const sway = rand(50, 150);
-        const spin = rand(120, 720);
+        const duration = rand(8, 15); // random falling speed
+        const delay = rand(0, 5);
+        const sway = rand(50, 150); // horizontal sway
+        const spin = rand(120, 720); // rotation spin
 
+        // Individual timeline per leaf
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           repeat: -1,
           delay,
         });
 
+        // Falling down
         tl.to(
           leafEl,
           {
@@ -91,6 +74,7 @@ export default function HeroSection() {
           0
         );
 
+        // Horizontal swaying motion
         tl.to(
           leafEl,
           {
@@ -106,6 +90,7 @@ export default function HeroSection() {
         leavesTimeline.add(tl, 0);
       });
 
+      // Scroll trigger: pause animation when out of view
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
@@ -114,7 +99,7 @@ export default function HeroSection() {
         onLeave: () => leavesTimeline.pause(),
       });
 
-      // Subtitle typewriter ("Frontend Developer")
+      // Subtitle typewriter effect ("Frontend Developer")
       if (subtitleRef.current) subtitleRef.current.textContent = "";
       const fullSubtitle = "Frontend Developer";
       const typingDelay = 0.06;
@@ -130,6 +115,7 @@ export default function HeroSection() {
         });
       });
 
+      // Animate buttons after subtitle typing
       contentTL.from(buttonsRef.current, {
         scale: 0.95,
         opacity: 0,
@@ -153,22 +139,22 @@ export default function HeroSection() {
       className="relative flex flex-col items-center justify-center text-center min-h-screen bg-gradient-to-b from-orange-50 to-white dark:from-gray-900 dark:to-black px-4 overflow-hidden"
       aria-label="Hero - Samar Khaled"
     >
-      {/* Falling autumn symbols */}
+      {/* 🍂 Falling autumn leaves */}
       {Array.from({ length: LEAVES_COUNT }).map((_, i) => (
         <div
           key={i}
           ref={(el) => {
             leavesRef.current[i] = el;
           }}
-          className="pointer-events-none select-none absolute"
+          className="pointer-events-none select-none absolute text-lg sm:text-xl lg:text-2xl"
           style={{ left: 0, top: 0 }}
           aria-hidden
         >
-          {symbols[Math.floor(Math.random() * symbols.length)]}
+          {symbols[0]}
         </div>
       ))}
 
-      {/* Content */}
+      {/* Hero content */}
       <h1
         ref={titleRef}
         className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-4 relative z-10"
@@ -196,8 +182,7 @@ export default function HeroSection() {
           href="#contact"
           className="px-6 py-3 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition"
         >
-          Contact Me
-        </a>
+          Contact Me</a>
         <a
           href="/samarkhaled-fronted.pdf"
           download
@@ -208,4 +193,4 @@ export default function HeroSection() {
       </div>
     </section>
   );
-
+}
