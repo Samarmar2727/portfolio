@@ -69,7 +69,7 @@ const projects: Project[] = [
     technologies: ["javaScript", "Bootstrap", "Tarmeez API"],
     features: ["Auth (login/register)", "CRUD posts", "Comments", "Profile page"],
     github: "https://github.com/Samarmar2727/social-media-project",
-    image: "/social.JPG",
+    image: "/social2.JPG",
   },
 ];
 
