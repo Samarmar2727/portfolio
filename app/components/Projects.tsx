@@ -38,6 +38,55 @@ const projects: Project[] = [
     image: "/e.commerce2.JPG",
   },
   {
+    title: "Admin Dashboard",
+    description:
+      "A fully responsive admin dashboard with charts, calendar, dark mode, and routing.",
+    technologies: [
+      "React",
+      "Vite",
+      "Material UI",
+      "Nivo Charts",
+      "React Router DOM",
+      "FullCalendar",
+      "MUI X",
+    ],
+    features: [
+      "Interactive charts",
+      "Calendar integration",
+      "Dark/Light mode",
+      "Routing & navigation",
+      "Fully responsive",
+    ],
+    live: "https://admin-dashboard-27.netlify.app",
+    github: "https://github.com/Samarmar2727/admin-dashboard",
+    image: "/dashboard 2.JPG",
+  },
+  {
+    title: "Weather App",
+    description:
+      "A weather forecast application with multilingual support, real-time weather data, and elegant UI.",
+    technologies: [
+      "React",
+      "Vite",
+      "Redux Toolkit",
+      "Material UI",
+      "Emotion",
+      "Axios",
+      "Date-fns",
+      "Moment.js",
+      "i18next",
+    ],
+    features: [
+      "Real-time weather data",
+      "Multilingual support",
+      "Date & time formatting",
+      "Responsive design",
+    ],
+    live: "https://weather-app277.netlify.app",
+    github: "https://github.com/Samarmar2727/weather-app",
+    image: "/weather app.JPG",
+  },
+  {
     title: "Movie Web App",
     description:
       "Responsive movie database app integrated with OMDb API. Includes search, filters, trailer, and pagination.",
@@ -62,17 +111,36 @@ const projects: Project[] = [
     github: "https://github.com/Samarmar2727/TO-DO-List-by-react",
     image: "/todo.JPG",
   },
+
+  {
+    title: "Prayer Times App",
+    description:
+      "An app displaying daily prayer times with a clean and responsive design.",
+    technologies: ["React", "Vite", "Axios", "Material UI", "Emotion"],
+    features: [
+      "Fetch daily prayer times",
+      "Responsive design",
+      "Simple & clean UI",
+    ],
+     live: "https://prayers-times2.netlify.app",
+    github: "https://github.com/Samarmar2727/prayers-times",
+    image: "/prayers.JPG",
+  },
   {
     title: "Social Media App",
     description:
       "Training project with login, register, posts, comments, and profile with avatar upload using Tarmeez API.",
-    technologies: ["javaScript", "Bootstrap", "Tarmeez API"],
-    features: ["Auth (login/register)", "CRUD posts", "Comments", "Profile page"],
+    technologies: ["JavaScript", "Bootstrap", "Tarmeez API"],
+    features: [
+      "Auth (login/register)",
+      "CRUD posts",
+      "Comments",
+      "Profile page",
+    ],
     github: "https://github.com/Samarmar2727/social-media-project",
     image: "/social 2.JPG",
   },
 ];
-
 
 export default function Projects() {
   useEffect(() => {
@@ -93,23 +161,23 @@ export default function Projects() {
     <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-6xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 dark:text-white">
-           Featured Projects
+          Featured Projects
         </h2>
         <div className="grid gap-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
           {projects.map((project, i) => (
             <motion.div
-                    key={i}
-                    className="project-card bg-white dark:bg-gray-800 rounded-3xl shadow-lg p-6 flex flex-col transition-all duration-300"
-                    initial={{ opacity: 0, y: 50 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: i * 0.2 }}
-                    viewport={{ once: true }}
-                    whileHover={{
-                      scale: 1.05,
-                      y: -8, 
-                      boxShadow: "0 15px 30px rgba(0,0,0,0.25)", 
-                    }}
-                  >
+              key={i}
+              className="project-card bg-white dark:bg-gray-800 rounded-3xl shadow-lg p-6 flex flex-col transition-all duration-300"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: i * 0.2 }}
+              viewport={{ once: true }}
+              whileHover={{
+                scale: 1.05,
+                y: -8,
+                boxShadow: "0 15px 30px rgba(0,0,0,0.25)",
+              }}
+            >
               {/* Project Image */}
               <div className="relative w-full h-60 mb-4">
                 <Image
